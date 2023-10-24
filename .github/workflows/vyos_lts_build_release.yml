@@ -1,10 +1,13 @@
 name: VyOS LTS Build
 
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - "*"
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
     container:
       # For VyOS 1.2 (crux) use vyos/vyos-build:crux
@@ -16,39 +19,35 @@ jobs:
         TZ: Europe/Amsterdam
       options: --privileged
 
+
     steps:
     - name: Set env
       run: |
         echo "RELEASE_VERSION=${GITHUB_REF:10}" >> $GITHUB_ENV
-
     - name: git clone vyos-build
       run: |
         set -eux
         git clone -b equuleus --single-branch https://github.com/vyos/vyos-build
-
     - name: configure
       working-directory: vyos-build
       run: |
         set -eux
         ./configure \
           --architecture amd64 \
-          --build-by "vyos@vyos.io" \
+          --build-by "Vyos@vyos.io" \
           --build-type release \
           --version ${{ env.RELEASE_VERSION }}
-
     - name: make iso
       working-directory: vyos-build
       run: |
-        set -eux 
+        set -eux
         make iso
-
     - name: ls
       run: |
         set -eux
         pwd
         ls -lah
         ls -lah vyos-build/build
-
     - uses: actions/create-release@master
       id: create_release # ファイルアップロードに outputs の値を使用するため ID が必要
       env:
