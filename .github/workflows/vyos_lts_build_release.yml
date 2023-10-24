@@ -15,7 +15,7 @@ jobs:
       image: vyos/vyos-build:equuleus
       env:
         TZ: Europe/Copenhagen
-      options: --user root
+      options: --privileged
 
     steps:
     - name: Set env
