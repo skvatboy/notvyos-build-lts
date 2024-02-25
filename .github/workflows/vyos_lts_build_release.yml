@@ -28,7 +28,7 @@ jobs:
     - name: git clone vyos-build
       run: |
         set -eux
-        git clone -b equuleus --single-branch https://github.com/vyos/vyos-build
+        git clone -b sagitta --single-branch https://github.com/vyos/vyos-build
     - name: configure
       working-directory: vyos-build
       run: |
