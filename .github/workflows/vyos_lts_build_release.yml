@@ -9,7 +9,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    container:
+    container: 
       # For VyOS 1.2 (crux) use vyos/vyos-build:crux
       # For VyOS 1.3 (equuleus) use vyos/vyos-build:equuleus
       # For VyOS 1.4 (sagitta) use vyos/vyos-build:sagitta
@@ -19,40 +19,48 @@ jobs:
       env:
         TZ: Europe/Amsterdam
       options: --privileged
-
+      
 
     steps:
     - name: Set env
       run: |
-        echo "RELEASE_VERSION=${GITHUB_REF##*/}" >> $GITHUB_ENV
+        echo "RELEASE_VERSION=${GITHUB_REF##*/}" >> $GITHUB_ENV 
+
     - name: git clone vyos-build
       run: |
         set -eux
-    - name: configure
+        
         git clone -b sagitta --single-branch https://github.com/vyos/vyos-build
+
     - name: make clean
       working-directory: vyos-build
       run: |
         set -eux
+        
         make clean
+
     - name: build iso
       working-directory: vyos-build
       run: |
         set -eux
+        
         ./build-vyos-image iso \
-            --architecture amd64 \
-            --build-by "Vyos@vyos.io" \
-            --build-type release \
-            --version ${{ env.RELEASE_VERSION }}
+          --architecture amd64 \
+          --build-by Vyos@vyos.io \
+          --build-type release \
+          --version ${{ env.RELEASE_VERSION }}
+
     - name: ls
       run: |
         set -eux
+
         pwd
         ls -lah
         ls -lah vyos-build/build
         ISOFILE=vyos-build/build/vyos-${{ env.RELEASE_VERSION }}-amd64.iso
         echo "SHA1=$(sha1sum $ISOFILE | cut -d' ' -f1)" >> $GITHUB_ENV
         echo "SHA256=$(sha256sum $ISOFILE | cut -d' ' -f1)" >> $GITHUB_ENV
+
     - uses: actions/create-release@master
       id: create_release # ファイルアップロードに outputs の値を使用するため ID が必要
       env:
@@ -62,6 +70,7 @@ jobs:
         release_name: VyOS ${{ github.ref }} LTS
         body: |
           VyOS ${{ env.RELEASE_VERSION }} LTS
+
           SHA1: ${{ env.SHA1 }}
           SHA256: ${{ env.SHA256 }}
         draft: true
