@@ -29,9 +29,9 @@ jobs:
     - name: git clone vyos-build
       run: |
         set -eux
+        wget https://vyos.tnyzeq.icu/apt/apt.gpg.key -O /opt/apt.gpg.key
+        git clone -b sagitta --single-branch https://github.com/dd010101/vyos-build.git
         
-        git clone -b sagitta --single-branch https://github.com/vyos/vyos-build
-
     - name: make clean
       working-directory: vyos-build
       run: |
@@ -48,6 +48,8 @@ jobs:
           --architecture amd64 \
           --build-by Vyos@vyos.io \
           --build-type release \
+          --vyos-mirror "https://vyos.tnyzeq.icu/apt/sagitta" \
+          --custom-apt-key /opt/apt.gpg.key \
           --version ${{ env.RELEASE_VERSION }}
 
     - name: ls
