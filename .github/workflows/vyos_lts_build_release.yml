@@ -67,10 +67,10 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         name: VyOS ${{ env.RELEASE_VERSION }} LTS
-         tag_name: ${{ env.RELEASE_VERSION }}
-         body: |
+        tag_name: ${{ env.RELEASE_VERSION }}
+        body: |
           VyOS ${{ env.RELEASE_VERSION }} LTS
-         draft: true
+        draft: true
         prerelease: true
         files: |
            vyos-build/build/vyos-${{ env.RELEASE_VERSION }}-iso-amd64.iso
