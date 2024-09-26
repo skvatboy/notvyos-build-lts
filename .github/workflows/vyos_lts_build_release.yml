@@ -70,6 +70,8 @@ jobs:
         tag_name: ${{ env.RELEASE_VERSION }}
         body: |
           VyOS ${{ env.RELEASE_VERSION }} LTS
+          SHA1: ${{ env.SHA1 }}
+          SHA256: ${{ env.SHA256 }}
         draft: true
         prerelease: true
         files: |
