@@ -63,30 +63,14 @@ jobs:
         echo "SHA1=$(sha1sum $ISOFILE | cut -d' ' -f1)" >> $GITHUB_ENV
         echo "SHA256=$(sha256sum $ISOFILE | cut -d' ' -f1)" >> $GITHUB_ENV
 
-    - uses: actions/create-release@master
-      id: create_release # ファイルアップロードに outputs の値を使用するため ID が必要
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Pre-Release
+      uses: softprops/action-gh-release@v2
       with:
-        tag_name: ${{ github.ref }}
-        release_name: VyOS ${{ github.ref }} LTS
-        body: |
+        name: VyOS ${{ env.RELEASE_VERSION }} LTS
+         tag_name: ${{ env.RELEASE_VERSION }}
+         body: |
           VyOS ${{ env.RELEASE_VERSION }} LTS
-
-          SHA1: ${{ env.SHA1 }}
-          SHA256: ${{ env.SHA256 }}
-        draft: true
+         draft: true
         prerelease: true
-
-    - uses: actions/upload-release-asset@master
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        # リリースのアップロード URL (必須)
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        # 添付ファイルのパス (必須)
-        asset_path: vyos-build/build/vyos-${{ env.RELEASE_VERSION }}-iso-amd64.iso
-        # 添付ファイルの表示名 (必須)
-        asset_name: vyos-${{ env.RELEASE_VERSION }}-iso-amd64.iso
-        # 添付ファイルに対応する content-type (必須)
-        asset_content_type: application/x-iso9660-image
+        files: |
+           vyos-build/build/vyos-${{ env.RELEASE_VERSION }}-iso-amd64.iso
